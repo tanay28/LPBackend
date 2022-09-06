@@ -22,8 +22,13 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // routers
-app.use('/api/v1', healthCheckRouter)
-
+app.use('/api/v1', healthCheckRouter);
+app.use('/', (req, res) => {
+  const defaultData = {
+    status: 'Ok'
+  };
+  res.status(200).send(defaultData);
+});
 
 //static Images Folder
 app.use('/Images', express.static('./Images'))
