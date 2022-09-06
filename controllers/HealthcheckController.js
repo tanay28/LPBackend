@@ -4,6 +4,7 @@ const healthCheck = (req, res) =>{
 
     const healthcheckData = {
         Message: `Backend Service is up and running From ${req.app.get('env')}`,
+        port: req.app.get('port'),
         applicationVersion: version, 
         uptime: process.uptime(),
         responseTime: process.hrtime(),
