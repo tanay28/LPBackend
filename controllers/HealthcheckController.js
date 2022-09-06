@@ -3,7 +3,7 @@ const { version } = require('../package.json');
 const healthCheck = (req, res) =>{
 
     const healthcheckData = {
-        Message: 'Backend Service is up and running and also deployed in Heroku.!!',
+        Message: `Backend Service is up and running From ${req.app.get('env')}`,
         applicationVersion: version, 
         uptime: process.uptime(),
         responseTime: process.hrtime(),
