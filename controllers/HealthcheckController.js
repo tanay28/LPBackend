@@ -1,5 +1,6 @@
 
 const { version } = require('../package.json');
+const logger = require('../config/Logger');
 const healthCheck = (req, res) =>{
 
     const healthcheckData = {
@@ -11,7 +12,7 @@ const healthCheck = (req, res) =>{
         status: 'OK',
         timestamp: Date.now()
     };
-
+    logger.error(JSON.stringify(healthcheckData));
     res.status(200).send(healthcheckData);
 }
 module.exports = {

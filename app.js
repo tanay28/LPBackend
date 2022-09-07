@@ -4,6 +4,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const cors = require('cors');
+const wlogger = require('./config/Logger');
 
 const healthCheckRouter = require('./routes/healthcheckRoutes');
 
