@@ -5,8 +5,8 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const cors = require('cors');
 const wlogger = require('./config/Logger');
-
-const healthCheckRouter = require('./routes/healthcheckRoutes');
+require('dotenv').config();
+const allRoutes = require('./routes');
 
 var app = express();
 
@@ -23,7 +23,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // routers
-app.use('/api/v1', healthCheckRouter);
+app.use('/api/v1', allRoutes);
 app.use('/', (req, res) => {
   const defaultData = {
     status: 'Ok'
@@ -42,6 +42,7 @@ app.use(function(req, res, next) {
 // error handler
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
+  console.log('PORT => ', process.env.PORT);
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 

@@ -1,10 +1,17 @@
 const { createLogger, transports, format } = require('winston');
+require('winston-mongodb');
+require('dotenv').config();
+
 const logger = createLogger({
     transports: [
-        new transports.File({
-            filename: 'info.log',
+        new transports.MongoDB({
             level: 'info',
-            format: format.combine(format.timestamp(), format.json())
+            db: process.env.DB_URl,
+            options: {
+                useUnifiedTopology: true
+            },
+            collection: 'applog',
+            format: format.combine(format.timestamp({format: 'YYYY-MM-DD HH:mm:ss'}), format.json())
         })
     ]
 })
