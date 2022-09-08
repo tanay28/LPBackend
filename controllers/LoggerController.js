@@ -5,7 +5,7 @@ module.exports = {
         const errLog = {
             status: status,
             data: data,
-            errorMsg: errMsg,
+            statusMsg: errMsg,
             errorObj: errObj,
             operation: operation
         }
