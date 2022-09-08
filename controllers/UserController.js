@@ -35,7 +35,7 @@ module.exports = {
             if (savedUser) {
                 logger.logActivity(loggerStatus.INFO, req.body, 'Registration Successful!!', null, OPERATIONS.USERS.CREATE);
                 res.json({ 
-                    message: 'Registration Successful',
+                    message: 'Registration Successful!!',
                     newUser: savedUser
                 });
             }
