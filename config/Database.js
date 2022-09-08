@@ -23,11 +23,11 @@ sequelize.sync();
 (async () => {
   try {
     await sequelize.authenticate();
-    console.log('connected!');
+    console.log('connected.....!!');
     logger.logActivity(loggerStatus.INFO, null, 'Connection has been established successfully.', null, OPERATIONS.DATABASE.CONNECT);
   } catch (error) {
     logger.logActivity(loggerStatus.ERROR, null, 'Unable to connect to the database', error, OPERATIONS.DATABASE.CONNECT);
-    console.log('not connected!!');
+    console.log('not connected.!!');
   }
 })();
 
