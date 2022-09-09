@@ -102,7 +102,8 @@ module.exports = {
             }  else {
                 logger.logActivity(loggerStatus.INFO, req.body, 'No user found!!', null, OPERATIONS.USERS.CREATE);
                 res.status(409).json({ message: 'No user found!!' });
-            }  
+            }
+            
         } catch (error) {
             logger.logActivity(loggerStatus.ERROR, req.body, 'Unable to execute db query to select', error, OPERATIONS.USERS.CREATE);
         }  
