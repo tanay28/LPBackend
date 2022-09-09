@@ -14,7 +14,7 @@ module.exports = {
             res.status(400).json({ message: 'FullName, email, password and phone no is required!' });
             return;
         }
-
+        
         if(userPhoneNo.length != 10) {
             logger.logActivity(loggerStatus.ERROR, req.body, 'A phone no should have 10 digits.!!', null, OPERATIONS.USERS.CREATE);
             res.status(400).json({ message: 'A phone no should have 10 digits.!!' });
@@ -103,7 +103,7 @@ module.exports = {
                 logger.logActivity(loggerStatus.INFO, req.body, 'No user found!!', null, OPERATIONS.USERS.CREATE);
                 res.status(409).json({ message: 'No user found!!' });
             }
-            
+
         } catch (error) {
             logger.logActivity(loggerStatus.ERROR, req.body, 'Unable to execute db query to select', error, OPERATIONS.USERS.CREATE);
         }  
