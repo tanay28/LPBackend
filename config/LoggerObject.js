@@ -7,7 +7,8 @@ module.exports = {
         USERS: {
             CREATE: 'create an user',
             MODIFY: 'modify user info',
-            REMOVE: 'remove user info'
+            REMOVE: 'remove user info',
+            RETRIEVE: 'get all users'
         },
         DATABASE: {
             CONNECT: 'db connection',

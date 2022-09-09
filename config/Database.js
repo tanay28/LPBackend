@@ -23,11 +23,11 @@ sequelize.sync();
 (async () => {
   try {
     await sequelize.authenticate();
-    console.log('connected.....!!');
-    logger.logActivity(loggerStatus.INFO, null, 'Connection has been established successfully.', null, OPERATIONS.DATABASE.CONNECT);
+    console.log(`${process.env.HOST_TYPE} - connected.....!!`);
+    logger.logActivity(loggerStatus.INFO, null, `${process.env.HOST_TYPE} - Connection has been established successfully.`, null, OPERATIONS.DATABASE.CONNECT);
   } catch (error) {
     logger.logActivity(loggerStatus.ERROR, null, 'Unable to connect to the database', error, OPERATIONS.DATABASE.CONNECT);
-    console.log('not connected.!!');
+    console.log(`${process.env.HOST_TYPE} - not connected.!!`);
   }
 })();
 
