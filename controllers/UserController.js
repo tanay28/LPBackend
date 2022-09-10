@@ -1,6 +1,6 @@
 const logger = require('./LoggerController');
 const { loggerStatus, OPERATIONS } = require('../config/LoggerObject');
-const Users = require('../model/userModel');
+const Users = require('../model/usermodel');
 const { hashSync, genSaltSync, compareSync } = require("bcrypt");
 const { sign } = require("jsonwebtoken");
 
