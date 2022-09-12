@@ -10,7 +10,7 @@ module.exports = {
       jwt.verify(token, process.env.SALT, (err, decoded) => {
         if (err) {
           return res.json({
-            success: 0,
+            status: 400,
             message: "Invalid Token..."
           });
         } else {
@@ -19,8 +19,8 @@ module.exports = {
             req.decoded = decoded.result;
             next();
           } else {
-            return res.status(403).json({
-              success: 0,
+            return res.status(400).json({
+              status: 400,
               message: "Token is not valid for this user.!! Please retry with a valid user."
             });
           }
