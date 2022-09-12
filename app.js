@@ -2,6 +2,7 @@ var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
+const mongodbConnection = require('./config/Mongodb');
 var logger = require('morgan');
 const cors = require('cors');
 const wlogger = require('./config/Logger');
@@ -9,9 +10,26 @@ require('dotenv').config();
 const allRoutes = require('./routes');
 
 var app = express();
+mongodbConnection();
+
+// const allowlist = ['http://localhost:4200', 'http://localhost:3000'];
+// const corsOptionsDelegate = (req, callback) => {
+//   let corsOptions;
+//   let isDomainAllowed = whitelist.indexOf(req.header('Origin')) !== -1;
+//   if (isDomainAllowed && isExtensionAllowed) {
+//     // Enable CORS for this request
+//     corsOptions = { origin: true }
+//   } else {
+//       // Disable CORS for this request
+//       corsOptions = { origin: false }
+//   }
+//   callback(null, corsOptions)
+// };
 
 const corsOptions = {
-  origin: 'http://localhost:4200'
+  origin: 'http://localhost:3000',
+  optionsSuccessStatus: 200, // For legacy browser support
+  methods: '*'
 };
 
 // middleware

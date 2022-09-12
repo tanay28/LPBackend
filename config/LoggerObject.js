@@ -17,8 +17,15 @@ module.exports = {
             UPDATE: 'update info in db',
             DELETE: 'delete info in db'
         },
+        MONGODB: {
+            CONNECT: 'mongodb connection'
+        },
         AUTH: {
-            LOGIN: 'user login'
+            LOGIN: 'user login',
+            ACTIVATION: 'user activation',
+            FORGOT_PASS: 'forgot password',
+            OTP_VERIFY: 'otp verification',
+            NEW_PASS: 'create new password'
         }
     }
 

@@ -3,6 +3,8 @@ const logger = require('../controllers/LoggerController');
 const { loggerStatus, OPERATIONS } = require('../config/LoggerObject');
 require('dotenv').config();
 
+
+
 const sequelize = new Sequelize(
   process.env.MYSQL_DB_NAME,
   process.env.MYSQL_DB_USERNAME,
