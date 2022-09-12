@@ -3,8 +3,7 @@ const { loggerStatus, OPERATIONS } = require('../config/LoggerObject');
 
 module.exports = {
     validateOpenRequest: (req, res, next) => {
-        
-        if(req.get('origin') || req.get('content-type') || req.get('requested-timestamp') || req.get('conversation-id')) {
+        if(req.get('origin') != undefined && req.get('content-type') != undefined && req.get('requested-timestamp') != undefined && req.get('conversation-id') != undefined) {
             next();
         } else {
             res.status(400).json({
