@@ -5,12 +5,9 @@ const { hashSync, genSaltSync } = require('bcrypt');
 const otpGenerator = require('otp-generator');
 const OtpSchema = require('../model/mongomodelotp');
 const axios = require('axios');
-const { URLSearchParams } = require('url');
-var twilio = require('twilio');
 
 const sendOTPV1 = (phoneNo, otp) => {
 
-    const msg = `Your OTP is ${otp}`;
     const dataMsg = `Hi there, thank you for sending your first test message from Textlocal. Get 20% off today with our code: ${otp}.`;
 
     const apiKey = 'apikey=' + encodeURIComponent(process.env.API_KEY);
