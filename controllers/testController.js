@@ -5,6 +5,6 @@ module.exports = {
         const jwtreq = req.body.token;
        
         const decoded = verify(jwtreq, process.env.SALT)
-        res.send(decoded);
+        res.send(decoded.result);
     }
 }

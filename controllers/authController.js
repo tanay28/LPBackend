@@ -1,7 +1,7 @@
 const logger = require('./LoggerController');
 const { loggerStatus, OPERATIONS } = require('../config/LoggerObject');
 const Users = require('../model/usermodel');
-const { compareSync } = require("bcrypt");
+const { compareSync, genSaltSync, hashSync } = require("bcrypt");
 const { sign } = require("jsonwebtoken");
 require('dotenv').config();
 
@@ -81,6 +81,56 @@ module.exports = {
                 data: "Invalid username!!"
             });
             return;
+        }
+    },
+
+    changePassword: async (req, res, next) => {
+        const { userEmail, newPassword } = req.body;
+        
+        if (!userEmail || !newPassword) {
+            logger.logActivity(loggerStatus.ERROR, req.body, 'Email and Password required.!!', null, OPERATIONS.AUTH.CHNAGE_PASS);
+            res.status(400).json({ message: 'Email and Password required.!!' });
+            return;
+        } else {
+            userCredential = await Users.findOne({ where: { email : userEmail } }).catch((err) => {
+                logger.logActivity(loggerStatus.ERROR, userEmail, 'Unable to fetch data from DB', err, OPERATIONS.AUTH.CHNAGE_PASS);
+            });
+
+            if (userCredential && userCredential != null) {
+                const salt = genSaltSync(10);
+                const newpass = hashSync(newPassword, salt);
+                const userUpdated = await Users.update({ password: newpass}, { where: { id: userCredential.id }}).catch((err) => {
+                    logger.logActivity(loggerStatus.ERROR, userEmail, 'Internal server error!!', err, OPERATIONS.AUTH.CHNAGE_PASS);
+                    res.status(500).json({
+                        status:500,
+                        data: 'Internal server error..!! Please try after some time.'
+                    });
+                    return;
+                });
+                if (userUpdated && userUpdated != null) {
+                    logger.logActivity(loggerStatus.INFO, userUpdated, 'Password changed successfully!!', null, OPERATIONS.AUTH.CHNAGE_PASS);
+                    res.status(200).json({
+                        username: userEmail,
+                        msg: 'Password changed successfully.!'
+                    });
+                    return;
+                } else {
+                    logger.logActivity(loggerStatus.ERROR, userEmail, 'Internal server error.!! Please try after some time.', null, OPERATIONS.AUTH.CHNAGE_PASS);
+                    res.status(500).json({
+                        status: 500,
+                        msg: 'Internal server error.!! Please try after some time.'
+                    });
+                    return;
+                }
+
+            } else {
+                logger.logActivity(loggerStatus.ERROR, userEmail, 'User not found!!', null, OPERATIONS.AUTH.CHNAGE_PASS);
+                res.status(404).json({
+                    status: 404,
+                    msg: "User not found!!"
+                });
+                return;
+            }
         }
     }
 }

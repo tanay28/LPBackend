@@ -1,5 +1,8 @@
 const router = require('express').Router();
 const testController = require('../controllers/testController');
+const logController = require('../controllers/logMonitorController');
+const { validateOpenRequest } = require('../auth/request-validation');
+const { checkToken } = require('../auth/Token_validation');
 
 const privateFunction = (req, res, next) => {
     let privateToken = req.get("authorization");
@@ -13,6 +16,7 @@ const privateFunction = (req, res, next) => {
     }
 }
 router.post('/decodejwt', privateFunction, testController.decodeJsonWebToken);
+router.get('/getalllogs', validateOpenRequest, checkToken, logController.getAllLogs);
 
 
 

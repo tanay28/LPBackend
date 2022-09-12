@@ -25,7 +25,8 @@ module.exports = {
             ACTIVATION: 'user activation',
             FORGOT_PASS: 'forgot password',
             OTP_VERIFY: 'otp verification',
-            NEW_PASS: 'create new password'
+            NEW_PASS: 'create new password',
+            CHNAGE_PASS: 'change old pass'
         },
         SMS: 'SMS gateway'
     }

@@ -3,6 +3,7 @@ require('dotenv').config();
 module.exports = {
   checkToken: (req, res, next) => {
     let token = req.get("authorization");
+    let currentUser = req.get("currentUser");
     if (token) {
       // Remove Bearer from string
       token = token.slice(7);
@@ -13,8 +14,17 @@ module.exports = {
             message: "Invalid Token..."
           });
         } else {
-          req.decoded = decoded;
-          next();
+
+          if (decoded.result.email === currentUser) {
+            req.decoded = decoded.result;
+            next();
+          } else {
+            return res.status(403).json({
+              success: 0,
+              message: "Token is not valid for this user.!! Please retry with a valid user."
+            });
+          }
+         
         }
       });
     } else {
