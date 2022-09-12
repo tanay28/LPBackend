@@ -26,7 +26,8 @@ module.exports = {
             FORGOT_PASS: 'forgot password',
             OTP_VERIFY: 'otp verification',
             NEW_PASS: 'create new password'
-        }
+        },
+        SMS: 'SMS gateway'
     }
 
 };

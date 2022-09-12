@@ -8,54 +8,29 @@ const axios = require('axios');
 const { URLSearchParams } = require('url');
 var twilio = require('twilio');
 
-const sendOTPV1 = (phoneNo, Otp) => {
+const sendOTPV1 = (phoneNo, otp) => {
 
-    const dataMsg = `Your One time password is ${Otp}.! This is valid for 3 mins.`;
+    const msg = `Your OTP is ${otp}`;
+    const dataMsg = `Hi there, thank you for sending your first test message from Textlocal. Get 20% off today with our code: ${otp}.`;
 
-    // const params = new URLSearchParams();
-    // params.append("apikey", process.env.API_KEY);
-    // params.append("sender", process.env.SMS_FROM);
-    // params.append("numbers", phoneNo);
-    // params.append("message", dataMsg);
-
-    const apiKey = 'apikey=' + encodeURI(process.env.API_KEY);
-    const message = '&message=' + encodeURI(dataMsg);
-    const sender = '&sender=' + encodeURI(process.env.SMS_FROM);
-    const numbers = '&numbers=' + encodeURI(phoneNo);
+    const apiKey = 'apikey=' + encodeURIComponent(process.env.API_KEY);
+    const message = '&message=' + encodeURIComponent(dataMsg);
+    const sender = '&sender=' + encodeURIComponent(process.env.SMS_FROM);
+    const numbers = '&numbers=' + encodeURIComponent(phoneNo);
 
     const createdParams = apiKey + numbers + message + sender;
 
-    //const url = 'https://api.textlocal.in/send/?' + params.toString();
     const url = 'https://api.textlocal.in/send/?' + createdParams;
-    console.log('//-- URL --//');
-    console.log(url);
-    console.log('//--------//')
     axios.get(url).then(res => {
-    console.log(`statusCode: ${res.status}`);
     console.log('//--- SMS Res -----//');
     console.log(res.data);
+    console.log('//--- END  -----//');
+    logger.logActivity(loggerStatus.INFO, createdParams, 'SMS Gateway', res.data, OPERATIONS.SMS);
   })
   .catch(error => {
     console.error(error);
+    logger.logActivity(loggerStatus.ERROR, createdParams, 'SMS Gateway', error, OPERATIONS.SMS);
   });
-}
-
-const sendOTPV2 = (phoneNo, Otp) => {
-    const acc_sid = process.env.ACC_SID;
-    const auth_token = process.env.AUTH_TOKEN;
-    let client = new twilio(acc_sid, auth_token);
-    const dataMsg = `Your One time password is ${Otp}.! This is valid for 3 mins.`;
-
-     client.messages.create( { to: phoneNo, from: process.env.SMS_FROM, body: dataMsg }, function( err, data ) {
-        console.log('//----- Sucess ------//');
-        console.log(data);
-        console.log('//--------------------//');
-
-        console.log('//----- Error ------//');
-        console.log(err);
-        console.log('//--------------------//');
-     });
-    
 }
 
 module.exports = {
