@@ -27,7 +27,7 @@ mongodbConnection();
 // };
 
 const corsOptions = {
-  origin: 'http://localhost:3000',
+  origin: ['http://localhost:3000', 'https://ladies-point.web.app'],
   optionsSuccessStatus: 200, // For legacy browser support
   methods: '*'
 };
