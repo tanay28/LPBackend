@@ -33,7 +33,7 @@ const corsOptions = {
 };
 
 // middleware
-app.use(cors(corsOptions));
+app.use(cors());
 app.use(logger('tiny'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
