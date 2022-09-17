@@ -127,7 +127,7 @@ module.exports = {
                 });
             }  else {
                 logger.logActivity(loggerStatus.INFO, req.body, 'No user found!!', null, OPERATIONS.USERS.CREATE);
-                res.status(409).json({ message: 'No user found!!' });
+                res.status(400).json({ message: 'No user found!!' });
             }
 
         } catch (error) {
@@ -142,12 +142,12 @@ module.exports = {
             if (username.includes('@')) {
                 // Username type email
                 userCredential = await Users.findOne({ where: { email : username } }).catch((err) => {
-                    logger.logActivity(loggerStatus.ERROR, req.body, 'Unable to fetch data from DB', err, OPERATIONS.AUTH.LOGIN);
+                    logger.logActivity(loggerStatus.ERROR, req.body, 'Unable to fetch data from DB', err, OPERATIONS.AUTH.ACTIVATION);
                 });
             } else {
                 // Username type phoneNo
                 userCredential = await Users.findOne({ where: { phoneNo : username } }).catch((err) => {
-                    logger.logActivity(loggerStatus.ERROR, req.body, 'Unable to fetch data from DB', err, OPERATIONS.AUTH.LOGIN);
+                    logger.logActivity(loggerStatus.ERROR, req.body, 'Unable to fetch data from DB', err, OPERATIONS.AUTH.ACTIVATION);
                 });
             }
 

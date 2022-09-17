@@ -1,7 +1,6 @@
 const router = require('express').Router();
 const userController = require('../controllers/UserController');
 const { validateOpenRequest } = require('../auth/request-validation');
-const { checkToken } = require('../auth/Token_validation');
 const { authoriseAdminRoutes } = require('../auth/authorise_admin_routes');  
 
 router.post('/users', validateOpenRequest, userController.registerUser);

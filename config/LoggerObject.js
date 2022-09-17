@@ -8,7 +8,8 @@ module.exports = {
             CREATE: 'create an user',
             MODIFY: 'modify user info',
             REMOVE: 'remove user info',
-            RETRIEVE: 'get all users'
+            RETRIEVE: 'get all users',
+            RETRIEVE_BY_ID: 'get user by id'
         },
         DATABASE: {
             CONNECT: 'db connection',
@@ -28,7 +29,20 @@ module.exports = {
             NEW_PASS: 'create new password',
             CHNAGE_PASS: 'change old pass'
         },
-        SMS: 'SMS gateway'
+        SMS: 'SMS gateway',
+        QUALITY: {
+            CREATE: 'create a new quality',
+            MODIFY: 'modify quality info',
+            REMOVE: 'remove quality info',
+            RETRIEVE: 'get all quality',
+            RETRIEVE_BY_ID: 'get quality by id'
+        },
+        PRODUCT_TYPE: {
+            CREATE: 'create a new product type',
+            REMOVE: 'remove a new product type',
+            RETRIEVE: 'get product type',
+            RETRIEVE_BY_ID: 'get product type by id'
+        }
     }
 
 };
