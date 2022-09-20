@@ -203,7 +203,6 @@ module.exports = {
             logger.logActivity(loggerStatus.ERROR, req.body, 'Unable to execute db query to create', error, OPERATIONS.PRODUCT_TYPE.CREATE);
         }
     },
-
     getAllProductType: async (req, res, next) => {
         try {
             const allExistingsTypes = await ProductType.findAll({ where: { isDeleted: false }}).catch((err) => {
@@ -227,7 +226,6 @@ module.exports = {
             logger.logActivity(loggerStatus.ERROR, req.body, 'Unable to execute db query to select', error, OPERATIONS.PRODUCT_TYPE.RETRIEVE);
         }
     },
-    
     getProductTypeById: async (req, res, next) => {
         if(req.params.id == null) {
             logger.logActivity(loggerStatus.ERROR, req.params, 'Type Id is missing.!!', null, OPERATIONS.PRODUCT_TYPE.RETRIEVE_BY_ID);
@@ -255,7 +253,6 @@ module.exports = {
                 });
         }
     },
-
     removeType: async (req, res, next) => {
         if (!req.params.id) {
             logger.logActivity(loggerStatus.ERROR, req.params, 'Id required to remove.!!', null, OPERATIONS.PRODUCT_TYPE.REMOVE);
@@ -284,7 +281,348 @@ module.exports = {
                 data: null
             });
         }
-    }
+    },
+    //------------------- END ---------------------//
+
+    //--------- Ware House Rest Methods ---------//
+    addWareHouse: async (req, res, next) => {
+        const { whName, whAddress, whCapacity, contactPerson } = req.body;
+        
+        if (!whName || !whAddress || !whCapacity ||!contactPerson ) {
+            logger.logActivity(loggerStatus.ERROR, req.body, 'Warehouse name, Warehouse adddress, Warehouse capacity, Contact person.!!', null, OPERATIONS.QUALITY.CREATE);
+            res.status(400).json({ message: 'Warehouse name, Warehouse adddress, Warehouse capacity, contact person.!!'});
+            return;
+        }
+
+        try {
+            const newWarehouse = new WareHouse({ 
+                whName: whName,
+                whAddress: whAddress,
+                whCapacity: whCapacity,
+                contactPerson: contactPerson,
+                isDeleted: false
+            });
+
+            const savedWarehouse = await newWarehouse.save().catch((err) => {
+                logger.logActivity(loggerStatus.ERROR, req.body, 'Cannot create Warehouse at the moment!', err, OPERATIONS.WAREHOUSE.CREATE);
+                res.status(500).json({ error: 'Cannot create Warehouse at this moment!' });
+            });
+
+            if (savedWarehouse) {
+                logger.logActivity(loggerStatus.INFO, req.body, 'New Warehouse added successfully!!', null, OPERATIONS.WAREHOUSE.CREATE);
+                res.status(200).json({ 
+                    message: 'New Warehouse added successfully!!',
+                    data: savedWarehouse
+                });
+            }
+        } catch (error) {
+            logger.logActivity(loggerStatus.ERROR, req.body, 'Unable to execute db query to create', error, OPERATIONS.WAREHOUSE.CREATE);
+        }
+    },
+    getAllWareHouse: async (req, res, next) => {
+        try {
+            const allExistingsWarehouse = await WareHouse.findAll({ where: { isDeleted: false }}).catch((err) => {
+                logger.logActivity(loggerStatus.ERROR, mull, 'Unable to fetch all Warehouses!', err, OPERATIONS.WAREHOUSE.RETRIEVE);
+                res.status(400).json({ message: 'Unable to fetch all Warehouses!' });
+                return;
+            });
+
+            if (allExistingsWarehouse.length > 0) {
+                logger.logActivity(loggerStatus.INFO, null, 'All Warehouses are retrieved!!', null, OPERATIONS.WAREHOUSE.RETRIEVE);
+                res.status(200).json({ 
+                    message: 'All Warehouses are retrieved!!',
+                    data: allExistingsWarehouse
+                });
+            }  else {
+                logger.logActivity(loggerStatus.INFO, null, 'No Quality found!!', null, OPERATIONS.WAREHOUSE.RETRIEVE);
+                res.status(400).json({ message: 'No Warehouse found!!' });
+            }
+
+        } catch (error) {
+            logger.logActivity(loggerStatus.ERROR, req.body, 'Unable to execute db query to select', error, OPERATIONS.WAREHOUSE.RETRIEVE);
+        }
+    },
+    modifyWarehouse: async (req, res, next) => {
+        const { whName, whAddress, whCapacity, contactPerson } = req.body;
+
+        if(req.params.id == null) {
+            logger.logActivity(loggerStatus.ERROR, req.body, 'Warehouse Id is missing.!!', null, OPERATIONS.WAREHOUSE.MODIFY);
+            res.status(400).json({ message: 'Warehouse Id is missing.!!'});
+            return;  
+        }
+
+        if (!whName || !whAddress || !whCapacity || !contactPerson) {
+            logger.logActivity(loggerStatus.ERROR, req.body, 'Warehouse name, Warehouse adddress, Warehouse capacity, Contact person.!!', null, OPERATIONS.WAREHOUSE.MODIFY);
+            res.status(400).json({ message: 'Warehouse name, Warehouse adddress, Warehouse capacity, Contact person.!!'});
+            return;
+        }
+
+        try {
+            const getWarehouse = await retrieveWarehouseById(req.params.id);
+            
+            if (getWarehouse != null) {
+                const modifiedWarehouse = {
+                    whName: whName,
+                    whAddress: whAddress,
+                    whCapacity: whCapacity,
+                    contactPerson: contactPerson
+                };
+                await WareHouse.update(modifiedWarehouse, { where: { id: req.params.id }}).catch((err) => {
+                    logger.logActivity(loggerStatus.ERROR, modifiedWarehouse, 'Internal server error!!', err, OPERATIONS.WAREHOUSE.MODIFY);
+                    res.status(500).json({
+                        status:500,
+                        data: 'Internal server error..!! Please try after some time.'
+                    });
+                    return;
+                });
+                logger.logActivity(loggerStatus.ERROR, modifiedWarehouse, 'Warehouse updated!!', null, OPERATIONS.WAREHOUSE.MODIFY);
+                res.status(200).json({
+                    status: 200,
+                    data: modifiedWarehouse
+                });
+            } else {
+                logger.logActivity(loggerStatus.ERROR, modifiedWarehouse, 'Warehouse not found!!', err, OPERATIONS.WAREHOUSE.MODIFY);
+                res.status(400).json({
+                    data: 'Warehouse not found.!!'
+                });
+                return; 
+            } 
+        } catch (error) {
+            logger.logActivity(loggerStatus.ERROR, null, 'Something went wrong!!', error, OPERATIONS.WAREHOUSE.MODIFY);
+            res.status(500).json({
+                msg: 'Something went wrong!! Please try again later.',
+                data: null
+            });
+        }
+    },
+    removeWarehouse: async (req, res, next) => {
+        if (!req.params.id) {
+            logger.logActivity(loggerStatus.ERROR, req.params, 'Id required to remove.!!', null, OPERATIONS.WAREHOUSE.REMOVE);
+            res.status(400).json({ message: 'Id required to remove.!!'});
+            return;
+        }
+
+        try {
+            await WareHouse.update({ isDeleted: true }, { where: { id: req.params.id }}).catch((err) => {
+                logger.logActivity(loggerStatus.ERROR, req.params, 'Internal server error!!', err, OPERATIONS.WAREHOUSE.REMOVE);
+                res.status(500).json({
+                    status:500,
+                    data: 'Internal server error..!! Please try after some time.'
+                });
+                return;
+            });
+            logger.logActivity(loggerStatus.ERROR, req.params, 'Warehouse deleted!!', null, OPERATIONS.WAREHOUSE.REMOVE);
+            res.status(200).json({
+                status: 200,
+                id:req.params.id,
+                msg: 'Deleted successfully'
+            });
+        } catch (error) {
+            logger.logActivity(loggerStatus.ERROR, null, 'Something went wrong!!', error, OPERATIONS.WAREHOUSE.REMOVE);
+            res.status(500).json({
+                msg: 'Something went wrong!! Please try again later.',
+                data: null
+            });
+        }
+
+    },
+    getWarehousebyId: async (req, res, next) => {
+        if(req.params.id == null) {
+            logger.logActivity(loggerStatus.ERROR, req.params, 'Warehouse Id is missing.!!', null, OPERATIONS.WAREHOUSE.RETRIEVE_BY_ID);
+            res.status(400).json({ message: 'Warehouse Id is missing.!!'});
+            return;  
+        }
+        try {
+            const warehouseDetails = await retrieveWarehouseById(req.params.id);
+            if(warehouseDetails !== null) {
+                res.status(200).json({
+                    data: warehouseDetails
+                });
+            } else {
+                logger.logActivity(loggerStatus.ERROR, req.params, 'Warehouse not found.!!', null, OPERATIONS.WAREHOUSE.RETRIEVE_BY_ID);
+                res.status(400).json({
+                    msg: 'Warehouse not found.!!'
+                });
+            }
+        } catch (error) {
+            console.error(error);
+            logger.logActivity(loggerStatus.ERROR, null, 'Something went wrong.!!', error, OPERATIONS.WAREHOUSE.RETRIEVE_BY_ID);
+            res.status(500).json({
+                msg: 'Something went wrong.!! Please try after some time.'
+            });
+        }
+    },
+    //------------------- END ---------------------//
+
+    //--------- Shop Details Rest Methods ---------//
+    addShopDetails: async (req, res, next) => {
+        const { shName, shAddress, shCapacity, contactPerson } = req.body;
+        
+        if (!shName || !shAddress || !shCapacity ||!contactPerson ) {
+            logger.logActivity(loggerStatus.ERROR, req.body, 'Shop name, Shop adddress, Shop capacity, Contact person.!!', null, OPERATIONS.SHOPDETAILS.CREATE);
+            res.status(400).json({ message: 'Shop name, Shop adddress, Shop capacity, Contact person.!!'});
+            return;
+        }
+
+        try {
+            const newShop = new ShopDetails({ 
+                shName: shName,
+                shAddress: shAddress,
+                shCapacity: shCapacity,
+                contactPerson: contactPerson,
+                isDeleted: false
+            });
+
+            const savedShops = await newShop.save().catch((err) => {
+                logger.logActivity(loggerStatus.ERROR, req.body, 'Cannot create Shop at the moment!', err, OPERATIONS.SHOPDETAILS.CREATE);
+                res.status(500).json({ error: 'Cannot create Shop at this moment!' });
+            });
+
+            if (savedShops) {
+                logger.logActivity(loggerStatus.INFO, req.body, 'New Shop added successfully!!', null, OPERATIONS.SHOPDETAILS.CREATE);
+                res.status(200).json({ 
+                    message: 'New Shop added successfully!!',
+                    data: savedShops
+                });
+            }
+        } catch (error) {
+            logger.logActivity(loggerStatus.ERROR, null, 'Unable to execute db query to create', error, OPERATIONS.SHOPDETAILS.CREATE);
+        }
+    },
+    getAllShopDetails: async (req, res, next) => {
+        try {
+            const allExistingsShop = await ShopDetails.findAll({ where: { isDeleted: false }}).catch((err) => {
+                logger.logActivity(loggerStatus.ERROR, mull, 'Unable to fetch all Shops!', err, OPERATIONS.SHOPDETAILS.RETRIEVE);
+                res.status(400).json({ message: 'Unable to fetch all Shops!' });
+                return;
+            });
+
+            if (allExistingsShop.length > 0) {
+                logger.logActivity(loggerStatus.INFO, null, 'All Shops are retrieved!!', null, OPERATIONS.SHOPDETAILS.RETRIEVE);
+                res.status(200).json({ 
+                    message: 'All Shops are retrieved!!',
+                    data: allExistingsShop
+                });
+            }  else {
+                logger.logActivity(loggerStatus.INFO, null, 'No Shop found!!', null, OPERATIONS.SHOPDETAILS.RETRIEVE);
+                res.status(400).json({ message: 'No Shop found!!' });
+            }
+
+        } catch (error) {
+            logger.logActivity(loggerStatus.ERROR, req.body, 'Unable to execute db query to select', error, OPERATIONS.SHOPDETAILS.RETRIEVE);
+        }
+    },
+    modifyShopDetails: async (req, res, next) => {
+        const { shName, shAddress, shCapacity, contactPerson } = req.body;
+
+        if(req.params.id == null) {
+            logger.logActivity(loggerStatus.ERROR, req.body, 'Shop Id is missing.!!', null, OPERATIONS.SHOPDETAILS.MODIFY);
+            res.status(400).json({ message: 'Shop Id is missing.!!'});
+            return;  
+        }
+
+        if (!shName || !shAddress || !shCapacity ||!contactPerson) {
+            logger.logActivity(loggerStatus.ERROR, req.body, 'Shop name, Shop adddress, Shop capacity, Contact person.!!', null, OPERATIONS.SHOPDETAILS.MODIFY);
+            res.status(400).json({ message: 'Warehouse name, Warehouse adddress, Warehouse capacity, Contact person.!!'});
+            return;
+        }
+
+        try {
+            const getShop = await retrieveShopById(req.params.id);
+            
+            if (getShop != null) {
+                const modifiedShop = {
+                    shName: shName,
+                    shAddress: shAddress,
+                    shCapacity: shCapacity,
+                    contactPerson: contactPerson
+                };
+                await ShopDetails.update(modifiedShop, { where: { id: req.params.id }}).catch((err) => {
+                    logger.logActivity(loggerStatus.ERROR, modifiedShop, 'Internal server error!!', err, OPERATIONS.SHOPDETAILS.MODIFY);
+                    res.status(500).json({
+                        status:500,
+                        msg: 'Internal server error..!! Please try after some time.'
+                    });
+                    return;
+                });
+                logger.logActivity(loggerStatus.ERROR, modifiedShop, 'Shop updated!!', null, OPERATIONS.SHOPDETAILS.MODIFY);
+                res.status(200).json({
+                    status: 200,
+                    data: modifiedShop
+                });
+            } else {
+                logger.logActivity(loggerStatus.ERROR, modifiedShop, 'Shop not found!!', err, OPERATIONS.SHOPDETAILS.MODIFY);
+                res.status(400).json({
+                    data: 'Shop not found.!!'
+                });
+                return; 
+            } 
+        } catch (error) {
+            logger.logActivity(loggerStatus.ERROR, null, 'Something went wrong!!', error, OPERATIONS.SHOPDETAILS.MODIFY);
+            console.log(error);
+            res.status(500).json({
+                msg: 'Something went wrong!! Please try again later.',
+                data: null
+            });
+        }
+    },
+    removeShopDetails: async (req, res, next) => {
+        if (!req.params.id) {
+            logger.logActivity(loggerStatus.ERROR, req.params, 'Id required to remove.!!', null, OPERATIONS.SHOPDETAILS.REMOVE);
+            res.status(400).json({ message: 'Id required to remove.!!'});
+            return;
+        }
+
+        try {
+            await ShopDetails.update({ isDeleted: true }, { where: { id: req.params.id }}).catch((err) => {
+                logger.logActivity(loggerStatus.ERROR, req.params, 'Internal server error!!', err, OPERATIONS.SHOPDETAILS.REMOVE);
+                res.status(500).json({
+                    status:500,
+                    data: 'Internal server error..!! Please try after some time.'
+                });
+                return;
+            });
+            logger.logActivity(loggerStatus.ERROR, req.params, 'Shop deleted!!', null, OPERATIONS.SHOPDETAILS.REMOVE);
+            res.status(200).json({
+                status: 200,
+                id:req.params.id,
+                msg: 'Deleted successfully'
+            });
+        } catch (error) {
+            logger.logActivity(loggerStatus.ERROR, null, 'Something went wrong!!', error, OPERATIONS.SHOPDETAILS.REMOVE);
+            res.status(500).json({
+                msg: 'Something went wrong!! Please try again later.',
+                data: null
+            });
+        }
+
+    },
+    getShopDetailsbyId: async (req, res, next) => {
+        if(req.params.id == null) {
+            logger.logActivity(loggerStatus.ERROR, req.params, 'Shop Id is missing.!!', null, OPERATIONS.SHOPDETAILS.RETRIEVE_BY_ID);
+            res.status(400).json({ message: 'Shop Id is missing.!!'});
+            return;  
+        }
+        try {
+            const shopDetails = await retrieveShopById(req.params.id);
+            if(shopDetails !== null) {
+                res.status(200).json({
+                    data: shopDetails
+                });
+            } else {
+                logger.logActivity(loggerStatus.ERROR, req.params, 'Shop not found.!!', null, OPERATIONS.SHOPDETAILS.RETRIEVE_BY_ID);
+                res.status(400).json({
+                    msg: 'Shop not found.!!'
+                });
+            }
+        } catch (error) {
+            console.error(error);
+            logger.logActivity(loggerStatus.ERROR, null, 'Something went wrong.!!', error, OPERATIONS.SHOPDETAILS.RETRIEVE_BY_ID);
+            res.status(500).json({
+                msg: 'Something went wrong.!! Please try after some time.'
+            });
+        }
+    },
     //------------------- END ---------------------//
 
 }
@@ -302,7 +640,6 @@ retrieveQualityById = async (id) => {
         logger.logActivity(loggerStatus.ERROR, null, 'Unable to execute db query to create', error, OPERATIONS.QUALITY.RETRIEVE_BY_ID);
     }
 }
-
 retrieveTypeById = async (id) => {
     try {
         const typeDetails = await ProductType.findOne({ where: { id : id, isDeleted : false } }).catch((err) => {
@@ -313,5 +650,29 @@ retrieveTypeById = async (id) => {
         return typeDetails;
     } catch (error) {
         logger.logActivity(loggerStatus.ERROR, null, 'Unable to execute db query to create', error, OPERATIONS.PRODUCT_TYPE.RETRIEVE_BY_ID);
+    }
+}
+retrieveWarehouseById = async (id) => {
+    try {
+        const wareHouseDetails = await WareHouse.findOne({ where: { id : id, isDeleted : false } }).catch((err) => {
+            logger.logActivity(loggerStatus.ERROR, req.params, 'Unable to fetch data from DB', err, OPERATIONS.WAREHOUSE.RETRIEVE_BY_ID);
+            res.status(400).json({ error: 'Warehouse type not found.!!' });
+            return;
+        });
+        return wareHouseDetails;
+    } catch (error) {
+        logger.logActivity(loggerStatus.ERROR, null, 'Unable to execute db query to create', error, OPERATIONS.WAREHOUSE.RETRIEVE_BY_ID);
+    }
+}
+retrieveShopById = async (id) => {
+    try {
+        const shopDetails = await ShopDetails.findOne({ where: { id : id, isDeleted : false } }).catch((err) => {
+            logger.logActivity(loggerStatus.ERROR, req.params, 'Unable to fetch data from DB', err, OPERATIONS.SHOPDETAILS.RETRIEVE_BY_ID);
+            res.status(400).json({ error: 'Shop not found.!!' });
+            return;
+        });
+        return shopDetails;
+    } catch (error) {
+        logger.logActivity(loggerStatus.ERROR, null, 'Unable to execute db query to create', error, OPERATIONS.SHOPDETAILS.RETRIEVE_BY_ID);
     }
 }

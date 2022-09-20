@@ -42,6 +42,20 @@ module.exports = {
             REMOVE: 'remove a new product type',
             RETRIEVE: 'get product type',
             RETRIEVE_BY_ID: 'get product type by id'
+        },
+        WAREHOUSE: {
+            CREATE: 'create a new warehouse',
+            REMOVE: 'remove a warehouse',
+            RETRIEVE: 'get all warehouses',
+            MODIFY: 'modify warehouse info',
+            RETRIEVE_BY_ID: 'get warehouse type by id'
+        },
+        SHOPDETAILS: {
+            CREATE: 'create a new shop',
+            REMOVE: 'remove a shop',
+            RETRIEVE: 'get all shop',
+            MODIFY: 'modify shop info',
+            RETRIEVE_BY_ID: 'get shop by id'
         }
     }
 

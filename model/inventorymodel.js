@@ -63,7 +63,7 @@ const shopdetails = sequelize.define("shopdetails", {
         type: DataTypes.TEXT,
         allowNull: false
     },
-    whCapacity: {
+    shCapacity: {
         type: DataTypes.STRING,
         allowNull: false
     },
