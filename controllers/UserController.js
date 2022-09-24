@@ -34,7 +34,7 @@ module.exports = {
 
     registerUser: async (req, res) => {
         const { userFullName, userEmail, userPassword, userPhoneNo, userPhotoIdUrl } = req.body;
-        
+
         if (!userFullName || !userEmail || !userPassword || !userPhoneNo) {
             logger.logActivity(loggerStatus.ERROR, req.body, 'FullName, email, password and phone no is required!', null, OPERATIONS.USERS.CREATE);
             res.status(400).json({ message: 'FullName, email, password and phone no is required!' });
@@ -87,7 +87,7 @@ module.exports = {
                 phoneNo : userPhoneNo,
                 photoIdUrl: userPhotoIdUrl,
                 access : false,
-                role: 2
+                role: (req.body.isAdmin === undefined) ? 2 : 1 
              });
             const savedUser = await newUser.save().catch((err) => {
                 logger.logActivity(loggerStatus.ERROR, req.body, 'Cannot register user at the moment!', err, OPERATIONS.USERS.CREATE);
