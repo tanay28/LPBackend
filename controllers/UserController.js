@@ -87,7 +87,7 @@ module.exports = {
                 phoneNo : userPhoneNo,
                 photoIdUrl: userPhotoIdUrl,
                 access : false,
-                role: (req.body.isAdmin === undefined) ? 2 : 1 
+                role: (req.body.isAdmin !== undefined && req.body.isAdmin == true) ? 1 : 2 
              });
             const savedUser = await newUser.save().catch((err) => {
                 logger.logActivity(loggerStatus.ERROR, req.body, 'Cannot register user at the moment!', err, OPERATIONS.USERS.CREATE);
