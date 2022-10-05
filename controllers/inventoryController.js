@@ -23,18 +23,20 @@ module.exports = {
 
             const savedQuality = await newQuality.save().catch((err) => {
                 logger.logActivity(loggerStatus.ERROR, req.body, 'Cannot create quality at the moment!', err, OPERATIONS.QUALITY.CREATE);
+                console.error('Error in Quality Creation ==> ', err);
                 res.status(500).json({ error: 'Cannot create quality at this moment!' });
             });
 
             if (savedQuality) {
-                logger.logActivity(loggerStatus.INFO, req.body, 'New Product added successfully!!', null, OPERATIONS.USERS.CREATE);
+                logger.logActivity(loggerStatus.INFO, req.body, 'New Quality added successfully!!', null, OPERATIONS.USERS.CREATE);
                 res.status(200).json({ 
-                    message: 'New Product added successfully!!',
+                    message: 'New Quality added successfully!!',
                     data: savedQuality
                 });
             }
 
         } catch (error) {
+            console.error('Db Execution Error in Quality Creation ==> ', error);
             logger.logActivity(loggerStatus.ERROR, req.body, 'Unable to execute db query to create', error, OPERATIONS.QUALITY.CREATE);
         }
     },
@@ -42,6 +44,7 @@ module.exports = {
         try {
             const allExistingsQuality = await Quality.findAll({ where: { isDeleted: false }}).catch((err) => {
                 logger.logActivity(loggerStatus.ERROR, req.body, 'Unable to fetch all qualities!', err, OPERATIONS.QUALITY.RETRIEVE);
+                console.error('Err in Getting Qualities ==> ', err);
                 res.status(400).json({ message: 'Unable to fetch all qualities!' });
                 return;
             });
@@ -58,6 +61,7 @@ module.exports = {
             }
 
         } catch (error) {
+            console.error('Err in DB Execution in Getting Qualities ==> ', err);
             logger.logActivity(loggerStatus.ERROR, req.body, 'Unable to execute db query to select', error, OPERATIONS.QUALITY.RETRIEVE);
         }
     },
@@ -87,6 +91,7 @@ module.exports = {
                 };
                 await Quality.update(modifiedQuality, { where: { id: req.params.id }}).catch((err) => {
                     logger.logActivity(loggerStatus.ERROR, modifiedQuality, 'Internal server error!!', err, OPERATIONS.QUALITY.MODIFY);
+                    console.error('Err in update of Qualities ==> ', err);
                     res.status(500).json({
                         status:500,
                         data: 'Internal server error..!! Please try after some time.'
@@ -107,6 +112,7 @@ module.exports = {
             } 
         } catch (error) {
             logger.logActivity(loggerStatus.ERROR, null, 'Something went wrong!!', error, OPERATIONS.QUALITY.MODIFY);
+            console.error('Err in Db Execution in Qualities ==> ', error);
             res.status(500).json({
                 msg: 'Something went wrong!! Please try again later.',
                 data: null
@@ -123,6 +129,7 @@ module.exports = {
         try {
             await Quality.update({ isDeleted: true }, { where: { id: req.params.id }}).catch((err) => {
                 logger.logActivity(loggerStatus.ERROR, req.params, 'Internal server error!!', err, OPERATIONS.QUALITY.REMOVE);
+                console.error('Err in deletion of Qualities ==> ', err);
                 res.status(500).json({
                     status:500,
                     data: 'Internal server error..!! Please try after some time.'
@@ -137,6 +144,7 @@ module.exports = {
             });
         } catch (error) {
             logger.logActivity(loggerStatus.ERROR, null, 'Something went wrong!!', error, OPERATIONS.QUALITY.REMOVE);
+            console.error('Err in Db Execution in Qualities ==> ', error);
             res.status(500).json({
                 msg: 'Something went wrong!! Please try again later.',
                 data: null
@@ -165,6 +173,7 @@ module.exports = {
         } catch (error) {
             console.error(error);
             logger.logActivity(loggerStatus.ERROR, null, 'Something went wrong.!!', error, OPERATIONS.QUALITY.RETRIEVE_BY_ID);
+            console.error('Err in getting quality by id ==> ', error);
             res.status(500).json({
                 msg: 'Something went wrong.!! Please try after some time.'
             });
@@ -189,6 +198,7 @@ module.exports = {
             });
             const savedType = await newProductType.save().catch((err) => {
                 logger.logActivity(loggerStatus.ERROR, req.body, 'Cannot create product type at this moment!', err, OPERATIONS.PRODUCT_TYPE.CREATE);
+                console.error('Err in creating product type ==> ', err);
                 res.status(500).json({ error: 'Cannot create product type at this moment!' });
             });
 
@@ -200,6 +210,7 @@ module.exports = {
                 });
             }
         } catch (error) {
+            console.error('Err in DB execution in product type ==> ', error);
             logger.logActivity(loggerStatus.ERROR, req.body, 'Unable to execute db query to create', error, OPERATIONS.PRODUCT_TYPE.CREATE);
         }
     },
@@ -207,6 +218,7 @@ module.exports = {
         try {
             const allExistingsTypes = await ProductType.findAll({ where: { isDeleted: false }}).catch((err) => {
                 logger.logActivity(loggerStatus.ERROR, req.body, 'Unable to fetch all product types!', err, OPERATIONS.PRODUCT_TYPE.RETRIEVE);
+                console.error('Err in getting all product type ==> ', err);
                 res.status(400).json({ message: 'Unable to fetch all product types!' });
                 return;
             });
@@ -224,6 +236,7 @@ module.exports = {
 
         } catch (error) {
             logger.logActivity(loggerStatus.ERROR, req.body, 'Unable to execute db query to select', error, OPERATIONS.PRODUCT_TYPE.RETRIEVE);
+            console.error('Err in DB execution in getting all product type ==> ', error);
         }
     },
     getProductTypeById: async (req, res, next) => {
@@ -246,7 +259,7 @@ module.exports = {
                 });
             }
         } catch (error) {
-            console.error(error);
+            console.error('Err in DB execution in getting product type by id ==> ', error);
             logger.logActivity(loggerStatus.ERROR, null, 'Something went wrong.!!', error, OPERATIONS.PRODUCT_TYPE.RETRIEVE_BY_ID);
                 res.status(500).json({
                     msg: 'Something went wrong.!! Please try after some time.'
@@ -262,6 +275,7 @@ module.exports = {
         try {
             await ProductType.update({ isDeleted: true }, { where: { id: req.params.id }}).catch((err) => {
                 logger.logActivity(loggerStatus.ERROR, req.params, 'Internal server error!!', err, OPERATIONS.PRODUCT_TYPE.REMOVE);
+                console.error('Err in deletion of a product type ==> ', err);
                 res.status(500).json({
                     status:500,
                     data: 'Internal server error..!! Please try after some time.'
@@ -276,6 +290,7 @@ module.exports = {
             });
         } catch (error) {
             logger.logActivity(loggerStatus.ERROR, null, 'Something went wrong!!', error, OPERATIONS.PRODUCT_TYPE.REMOVE);
+            console.error('Err in DB Execution in product type ==> ', error);
             res.status(500).json({
                 msg: 'Something went wrong!! Please try again later.',
                 data: null
@@ -305,6 +320,7 @@ module.exports = {
 
             const savedWarehouse = await newWarehouse.save().catch((err) => {
                 logger.logActivity(loggerStatus.ERROR, req.body, 'Cannot create Warehouse at the moment!', err, OPERATIONS.WAREHOUSE.CREATE);
+                console.error('Err in adding of ware house ==> ', err);
                 res.status(500).json({ error: 'Cannot create Warehouse at this moment!' });
             });
 
@@ -316,6 +332,7 @@ module.exports = {
                 });
             }
         } catch (error) {
+            console.error('Err in Db execution in adding of warehouse ==> ', error);
             logger.logActivity(loggerStatus.ERROR, req.body, 'Unable to execute db query to create', error, OPERATIONS.WAREHOUSE.CREATE);
         }
     },
@@ -323,6 +340,7 @@ module.exports = {
         try {
             const allExistingsWarehouse = await WareHouse.findAll({ where: { isDeleted: false }}).catch((err) => {
                 logger.logActivity(loggerStatus.ERROR, mull, 'Unable to fetch all Warehouses!', err, OPERATIONS.WAREHOUSE.RETRIEVE);
+                console.error('Err in getting of a warehouses ==> ', err);
                 res.status(400).json({ message: 'Unable to fetch all Warehouses!' });
                 return;
             });
@@ -339,6 +357,7 @@ module.exports = {
             }
 
         } catch (error) {
+            console.error('Err in Db execution in getting all warehouses ==> ', error);
             logger.logActivity(loggerStatus.ERROR, req.body, 'Unable to execute db query to select', error, OPERATIONS.WAREHOUSE.RETRIEVE);
         }
     },
@@ -369,6 +388,7 @@ module.exports = {
                 };
                 await WareHouse.update(modifiedWarehouse, { where: { id: req.params.id }}).catch((err) => {
                     logger.logActivity(loggerStatus.ERROR, modifiedWarehouse, 'Internal server error!!', err, OPERATIONS.WAREHOUSE.MODIFY);
+                    console.error('Err in modify of a warehouse ==> ', err);
                     res.status(500).json({
                         status:500,
                         data: 'Internal server error..!! Please try after some time.'
@@ -388,6 +408,7 @@ module.exports = {
                 return; 
             } 
         } catch (error) {
+            console.error('Err in Db execution in update of warehouses ==> ', error);
             logger.logActivity(loggerStatus.ERROR, null, 'Something went wrong!!', error, OPERATIONS.WAREHOUSE.MODIFY);
             res.status(500).json({
                 msg: 'Something went wrong!! Please try again later.',
@@ -405,6 +426,7 @@ module.exports = {
         try {
             await WareHouse.update({ isDeleted: true }, { where: { id: req.params.id }}).catch((err) => {
                 logger.logActivity(loggerStatus.ERROR, req.params, 'Internal server error!!', err, OPERATIONS.WAREHOUSE.REMOVE);
+                console.error('Err in update of warehouses ==> ', err);
                 res.status(500).json({
                     status:500,
                     data: 'Internal server error..!! Please try after some time.'
@@ -419,6 +441,7 @@ module.exports = {
             });
         } catch (error) {
             logger.logActivity(loggerStatus.ERROR, null, 'Something went wrong!!', error, OPERATIONS.WAREHOUSE.REMOVE);
+            console.error('Err in Db execution in updating warehouses ==> ', error);
             res.status(500).json({
                 msg: 'Something went wrong!! Please try again later.',
                 data: null
@@ -445,7 +468,7 @@ module.exports = {
                 });
             }
         } catch (error) {
-            console.error(error);
+            console.error('Err in Db execution in getting warehouse by id ==> ', error);
             logger.logActivity(loggerStatus.ERROR, null, 'Something went wrong.!!', error, OPERATIONS.WAREHOUSE.RETRIEVE_BY_ID);
             res.status(500).json({
                 msg: 'Something went wrong.!! Please try after some time.'
@@ -475,6 +498,7 @@ module.exports = {
 
             const savedShops = await newShop.save().catch((err) => {
                 logger.logActivity(loggerStatus.ERROR, req.body, 'Cannot create Shop at the moment!', err, OPERATIONS.SHOPDETAILS.CREATE);
+                console.error('Err creating in shop ==> ', err);
                 res.status(500).json({ error: 'Cannot create Shop at this moment!' });
             });
 
@@ -486,6 +510,7 @@ module.exports = {
                 });
             }
         } catch (error) {
+            console.error('Err in DB execution in creating shop ==> ', err);
             logger.logActivity(loggerStatus.ERROR, null, 'Unable to execute db query to create', error, OPERATIONS.SHOPDETAILS.CREATE);
         }
     },
@@ -493,6 +518,7 @@ module.exports = {
         try {
             const allExistingsShop = await ShopDetails.findAll({ where: { isDeleted: false }}).catch((err) => {
                 logger.logActivity(loggerStatus.ERROR, mull, 'Unable to fetch all Shops!', err, OPERATIONS.SHOPDETAILS.RETRIEVE);
+                console.error('Err in execution to fetch all Shops ==> ', err);
                 res.status(400).json({ message: 'Unable to fetch all Shops!' });
                 return;
             });
@@ -510,6 +536,7 @@ module.exports = {
 
         } catch (error) {
             logger.logActivity(loggerStatus.ERROR, req.body, 'Unable to execute db query to select', error, OPERATIONS.SHOPDETAILS.RETRIEVE);
+            console.error('Err in DB execution to fetch all Shops ==> ', error);
         }
     },
     modifyShopDetails: async (req, res, next) => {
@@ -539,6 +566,7 @@ module.exports = {
                 };
                 await ShopDetails.update(modifiedShop, { where: { id: req.params.id }}).catch((err) => {
                     logger.logActivity(loggerStatus.ERROR, modifiedShop, 'Internal server error!!', err, OPERATIONS.SHOPDETAILS.MODIFY);
+                    console.error('Err in DB execution to update all Shops ==> ', err);
                     res.status(500).json({
                         status:500,
                         msg: 'Internal server error..!! Please try after some time.'
@@ -559,7 +587,7 @@ module.exports = {
             } 
         } catch (error) {
             logger.logActivity(loggerStatus.ERROR, null, 'Something went wrong!!', error, OPERATIONS.SHOPDETAILS.MODIFY);
-            console.log(error);
+            console.error('Err in DB execution to update all Shops ==> ', error);
             res.status(500).json({
                 msg: 'Something went wrong!! Please try again later.',
                 data: null
@@ -576,6 +604,7 @@ module.exports = {
         try {
             await ShopDetails.update({ isDeleted: true }, { where: { id: req.params.id }}).catch((err) => {
                 logger.logActivity(loggerStatus.ERROR, req.params, 'Internal server error!!', err, OPERATIONS.SHOPDETAILS.REMOVE);
+                console.error('Err in remove Shops ==> ', err);
                 res.status(500).json({
                     status:500,
                     data: 'Internal server error..!! Please try after some time.'
@@ -590,6 +619,7 @@ module.exports = {
             });
         } catch (error) {
             logger.logActivity(loggerStatus.ERROR, null, 'Something went wrong!!', error, OPERATIONS.SHOPDETAILS.REMOVE);
+            console.error('Err in DB execution to remove Shops ==> ', err);
             res.status(500).json({
                 msg: 'Something went wrong!! Please try again later.',
                 data: null
@@ -616,7 +646,7 @@ module.exports = {
                 });
             }
         } catch (error) {
-            console.error(error);
+            console.error('Err in DB execution in get shop details by id ==> ', error);
             logger.logActivity(loggerStatus.ERROR, null, 'Something went wrong.!!', error, OPERATIONS.SHOPDETAILS.RETRIEVE_BY_ID);
             res.status(500).json({
                 msg: 'Something went wrong.!! Please try after some time.'
@@ -637,6 +667,7 @@ retrieveQualityById = async (id) => {
         });
         return qualityDetails;
     } catch (error) {
+        console.error('Err in DB execution in get Qaulity by id in function ==> ', error);
         logger.logActivity(loggerStatus.ERROR, null, 'Unable to execute db query to create', error, OPERATIONS.QUALITY.RETRIEVE_BY_ID);
     }
 }
@@ -649,6 +680,7 @@ retrieveTypeById = async (id) => {
         });
         return typeDetails;
     } catch (error) {
+        console.error('Err in DB execution in get type by id in function ==> ', error);
         logger.logActivity(loggerStatus.ERROR, null, 'Unable to execute db query to create', error, OPERATIONS.PRODUCT_TYPE.RETRIEVE_BY_ID);
     }
 }
@@ -661,6 +693,7 @@ retrieveWarehouseById = async (id) => {
         });
         return wareHouseDetails;
     } catch (error) {
+        console.error('Err in DB execution in get Warehouse by id in function ==> ', error);
         logger.logActivity(loggerStatus.ERROR, null, 'Unable to execute db query to create', error, OPERATIONS.WAREHOUSE.RETRIEVE_BY_ID);
     }
 }

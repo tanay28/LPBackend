@@ -12,25 +12,6 @@ const allRoutes = require('./routes');
 var app = express();
 mongodbConnection();
 
-// const allowlist = ['http://localhost:4200', 'http://localhost:3000'];
-// const corsOptionsDelegate = (req, callback) => {
-//   let corsOptions;
-//   let isDomainAllowed = whitelist.indexOf(req.header('Origin')) !== -1;
-//   if (isDomainAllowed && isExtensionAllowed) {
-//     // Enable CORS for this request
-//     corsOptions = { origin: true }
-//   } else {
-//       // Disable CORS for this request
-//       corsOptions = { origin: false }
-//   }
-//   callback(null, corsOptions)
-// };
-
-const corsOptions = {
-  origin: ['http://localhost:3000', 'https://ladies-point.web.app'],
-  optionsSuccessStatus: 200, // For legacy browser support
-  methods: '*'
-};
 
 // middleware
 app.use(cors());

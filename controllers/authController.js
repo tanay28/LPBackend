@@ -13,12 +13,13 @@ const processLogin = (userCredential, password, username) => {
             const jsontoken = sign({ result: userCredential }, process.env.SALT, {
                 expiresIn: "3h"
             });
-            logger.logActivity(loggerStatus.ERROR, username, 'login successfully', null, OPERATIONS.AUTH.LOGIN);
+            logger.logActivity(loggerStatus.INFO, username, 'login successfully', null, OPERATIONS.AUTH.LOGIN);
             return jsontoken;
         } else {
             return null;
         }
     } catch (error) {
+        console.error('Login Error => ', Login);
         logger.logActivity(loggerStatus.ERROR, username, 'Unable to process login!', error, OPERATIONS.AUTH.LOGIN);
     }
 }
